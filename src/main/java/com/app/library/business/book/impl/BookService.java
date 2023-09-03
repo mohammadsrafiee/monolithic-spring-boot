@@ -56,7 +56,7 @@ public class BookService implements IBookService {
             booksPage = repository.findAll(example, FilterQuery.pageRequest(search));
         }
         List<BookEntity> books = booksPage.getContent();
-        books.forEach((e) -> result.add(mapper.toModel(e)));
+        books.forEach(e -> result.add(mapper.toModel(e)));
         return result;
     }
 

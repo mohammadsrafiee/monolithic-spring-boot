@@ -12,7 +12,7 @@ import javax.script.ScriptException;
 public enum ExceptionMapperType {
 
     // add all exception in Enum for better exception handling
-    _400(400,
+    STATUS_400(400,
             "The request is malformed or contains invalid data.",
             new Class[]{
                     TransactionRequiredException.class,
@@ -20,13 +20,13 @@ public enum ExceptionMapperType {
                     InvalidDataAccessApiUsageException.class,
                     MethodArgumentNotValidException.class,
             }),
-    _403(403,
+    STATUS_403(403,
             "Authentication succeeded, but the authenticated user does not have permission to access the resource.",
             new Class<?>[]{
                     PermissionDeniedDataAccessException.class,
                     PermissionDeniedDataAccessException.class,
             }),
-    _404(404,
+    STATUS_404(404,
             "The requested resource could not be found on the server.",
             new Class[]{
                     EntityNotFoundException.class,
@@ -34,7 +34,7 @@ public enum ExceptionMapperType {
                     NoResultException.class,
             }
     ),
-    _409(409,
+    STATUS_409(409,
             "There was a conflict with the current state of the resource, preventing the request from being completed.",
             new Class[]{
                     DataIntegrityViolationException.class,
@@ -42,19 +42,18 @@ public enum ExceptionMapperType {
                     OptimisticLockException.class,
                     EntityExistsException.class,
             }),
-    _412(412,
+    STATUS_412(412,
             "One or more conditions specified in the request headers were not met.",
             null),
-    _422(422,
+    STATUS_422(422,
             "The request contains valid data, but the server cannot process it due to semantic errors (e.g., validation failures).",
             null),
-    _500(500,
+    STATUS_500(500,
             "An unexpected error occurred on the server.",
             new Class[]{
                     NonUniqueResultException.class,
                     RollbackException.class,
                     HibernateException.class,
-                    CleanupFailureDataAccessException.class,
                     UncategorizedDataAccessException.class,
                     InvalidDataAccessResourceUsageException.class,
                     NonTransientDataAccessResourceException.class,
@@ -66,7 +65,7 @@ public enum ExceptionMapperType {
                     UncategorizedDataAccessException.class,
                     NonTransientDataAccessException.class,
             }),
-    _503(503,
+    STATUS_503(503,
             "The server is temporarily unavailable, typically due to maintenance or overloading.",
             new Class[]{
                     LockTimeoutException.class,
@@ -75,10 +74,10 @@ public enum ExceptionMapperType {
                     RecoverableDataAccessException.class,
                     TransientDataAccessException.class,
             }),
-    _504(504,
+    STATUS_504(504,
             "The server, acting as a gateway, did not receive a timely response from the upstream server or application.",
             null),
-    Unknown(500,
+    UNKNOWN(500,
             "An unexpected error occurred on the server.",
             null),
 
@@ -119,12 +118,12 @@ public enum ExceptionMapperType {
                         try {
                             return type;
                         } catch (Exception e) {
-                            return ExceptionMapperType.Unknown;
+                            return ExceptionMapperType.UNKNOWN;
                         }
                     }
                 }
             }
         }
-        return ExceptionMapperType.Unknown;
+        return ExceptionMapperType.UNKNOWN;
     }
 }

@@ -10,7 +10,7 @@ public class IpAddressValidator implements ConstraintValidator<IpAddress, String
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        Pattern pattern = Pattern.compile("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
+        Pattern pattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
         Matcher matcher = pattern.matcher(value);
         try {
             if (!matcher.matches()) {

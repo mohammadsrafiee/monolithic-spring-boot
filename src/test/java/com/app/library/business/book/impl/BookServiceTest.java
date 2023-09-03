@@ -30,7 +30,7 @@ class BookServiceTest {
     private IBookMapper bookMapper;
 
     @Test
-    public void testSaveOrUpdate() {
+    void testSaveOrUpdate() {
         BookModel book = new BookModel();
         book.setId(1L);
         book.setName("Mohammad");
@@ -44,7 +44,7 @@ class BookServiceTest {
     }
 
     @Test
-    public void testGetById() {
+    void testGetById() {
         when(bookRepository.getReferenceById(1L)).thenReturn(new BookEntity());
         when(bookMapper.toModel(any())).thenReturn(new BookModel());
         BookModel result = bookService.getById(1L);
@@ -52,15 +52,15 @@ class BookServiceTest {
     }
 
     @Test
-    public void testDelete() {
+    void testDelete() {
         bookService.delete(1L);
         verify(bookRepository).deleteById(1L);
     }
 
     @Test
-    public void testGetAll() {
+    void testGetAll() {
         SearchModel<BookEntity> searchModel = new SearchModel<>();
-        Page<BookEntity> mockPage = mock(Page.class);
+        Page mockPage = mock(Page.class);
         when(bookRepository.findAll(any(), any(PageRequest.class))).thenReturn(mockPage);
         when(bookMapper.toModel(any())).thenReturn(new BookModel());
         List<BookModel> result = bookService.getAll(searchModel);

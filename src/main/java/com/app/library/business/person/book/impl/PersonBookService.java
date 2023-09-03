@@ -1,8 +1,6 @@
 package com.app.library.business.person.book.impl;
 
-import com.app.library.business.book.IBookMapper;
 import com.app.library.business.book.IBookRepository;
-import com.app.library.business.book.IBookService;
 import com.app.library.business.book.impl.BookEntity;
 import com.app.library.business.book.impl.BookModel;
 import com.app.library.business.person.IPersonMapper;
@@ -13,6 +11,7 @@ import com.app.library.business.person.impl.PersonEntity;
 import com.app.library.business.person.impl.PersonModel;
 import com.app.library.common.log.impl.Log;
 import com.app.library.common.search.SearchModel;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,22 +24,16 @@ public class PersonBookService implements IPersonBookService {
     private final IPersonService personService;
     private final IPersonMapper personMapper;
     private final IBookRepository bookRepository;
-    private final IBookService bookService;
-    private final IBookMapper bookMapper;
 
     // TODO change it by security context
     private static final Long USER_ID = 0L;
 
     public PersonBookService(IPersonMapper personMapper,
-                             IBookMapper bookMapper,
                              IPersonService personService,
-                             IBookService bookService,
                              IBookRepository bookRepository,
                              IPersonRepository personRepository) {
         this.personService = personService;
-        this.bookService = bookService;
         this.personMapper = personMapper;
-        this.bookMapper = bookMapper;
         this.personRepository = personRepository;
         this.bookRepository = bookRepository;
     }

@@ -12,6 +12,10 @@ import java.util.Map;
 
 public class FilterQuery {
 
+    private FilterQuery() {
+
+    }
+
     public static Sort sort(Map<String, String> fields) {
         List<Sort.Order> orders = new ArrayList<>();
         if (fields != null) {

@@ -89,13 +89,12 @@ public class LogHandlerAspect {
         try {
             if (ex != null) {
                 Throwable finalCause = getCause(ex);
-                if (finalCause != null) {
-                    if ((finalCause.getStackTrace() != null) &&
-                            (finalCause.getStackTrace().length >= 1)) {
-                        StackTraceElement[] stackTrace = finalCause.getStackTrace();
-                        if (stackTrace != null && stackTrace.length > 0)
-                            return stackTrace[0];
-                    }
+                if (finalCause != null &&
+                        (finalCause.getStackTrace() != null) &&
+                        (finalCause.getStackTrace().length >= 1)) {
+                    StackTraceElement[] stackTrace = finalCause.getStackTrace();
+                    if (stackTrace != null && stackTrace.length > 0)
+                        return stackTrace[0];
                 }
             }
         } catch (Exception exception) {

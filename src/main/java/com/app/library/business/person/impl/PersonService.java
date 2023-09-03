@@ -69,7 +69,7 @@ public class PersonService implements IPersonService {
     @Override
     public List<PersonModel> getAll(SearchModel<PersonEntity> search) {
         List<PersonModel> result = new ArrayList<>();
-        List<PersonEntity> persons = new ArrayList<>();
+        List<PersonEntity> persons;
         Example<PersonEntity> example = FilterQuery.example(search);
         Page<PersonEntity> personsPage;
         if (example == null) {
@@ -77,10 +77,8 @@ public class PersonService implements IPersonService {
         } else {
             personsPage = repository.findAll(example, FilterQuery.pageRequest(search));
         }
-        if (personsPage != null) {
-            persons = personsPage.getContent();
-        }
-        persons.forEach((e) -> result.add(mapper.toModel(e)));
+        persons = personsPage.getContent();
+        persons.forEach(e -> result.add(mapper.toModel(e)));
         return result;
     }
 

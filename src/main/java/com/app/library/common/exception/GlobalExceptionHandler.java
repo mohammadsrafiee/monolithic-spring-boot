@@ -38,10 +38,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> customHandleException(Throwable ex, WebRequest request) {
         ResponseEntity<Object> response;
         try {
-            if (ex instanceof BusinessException) {
-                response = generateResponse((BusinessException) ex, request);
-            } else if (ex instanceof Exception) {
-                response = handleException(((Exception) ex), request);
+            if (ex instanceof BusinessException exception) {
+                response = generateResponse(exception, request);
+            } else if (ex instanceof Exception exception) {
+                response = handleException(exception, request);
             } else {
                 ExceptionMapperType statusCode = ExceptionMapperType.getStatusCode(ex);
                 response = generateResponse(new BusinessException(ex.getMessage(), ex, null, statusCode.getStatus()), request);

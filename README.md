@@ -14,7 +14,7 @@ implementations are organized using Maven, leveraging the Spring framework, and 
 ## Table of Contents
 
 * [Introduction](#introduction)
-* [Getting Started](#getting_started)
+* [Getting Started](#getting started)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -27,7 +27,7 @@ relationships, versioning, and similar matters.
 
 ## Getting Started
 
-<a name="getting_started"></a>
+<a name="started"></a>
 To get started with this project, you'll need the following prerequisites:
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)

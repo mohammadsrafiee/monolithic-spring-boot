@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(BookController.BOOK_PATH)
+@RequestMapping(IBookController.BOOK_PATH)
 public class BookController implements IBookController {
 
     private final BookService service;

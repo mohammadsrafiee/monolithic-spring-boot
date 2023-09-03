@@ -50,7 +50,7 @@ class PersonBookServiceTest {
     }
 
     @Test
-    public void testBorrowBook() {
+    void testBorrowBook() {
         Long bookId = 1L;
         Long userId = 0L;
         BookEntity bookEntity = new BookEntity();
@@ -69,7 +69,7 @@ class PersonBookServiceTest {
     }
 
     @Test
-    public void testReleaseBook() {
+    void testReleaseBook() {
         Long bookId = 1L;
         Long userId = 0L;
         BookEntity bookEntity = new BookEntity();
@@ -89,7 +89,7 @@ class PersonBookServiceTest {
     }
 
     @Test
-    public void testMyBooks() {
+    void testMyBooks() {
         Long userId = 0L;
         PersonModel personModel = new PersonModel();
         personModel.setId(userId);

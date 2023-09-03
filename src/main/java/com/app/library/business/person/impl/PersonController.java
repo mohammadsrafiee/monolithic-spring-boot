@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(PersonController.PERSON_PATH)
+@RequestMapping(IPersonController.PERSON_PATH)
 public class PersonController implements IPersonController {
     private final IPersonService service;
 

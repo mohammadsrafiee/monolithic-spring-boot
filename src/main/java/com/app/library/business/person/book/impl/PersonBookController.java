@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController(PersonBookController.PERSON_BOOK_PATH)
+@RestController(IPersonBookController.PERSON_BOOK_PATH)
 public class PersonBookController implements IPersonBookController {
 
     private final IPersonBookService personBookService;
