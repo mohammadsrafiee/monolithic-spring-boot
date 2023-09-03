@@ -20,8 +20,11 @@ import java.util.List;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        ExceptionMapperType statusCode = getStatusCode(ex);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+        ExceptionMapperType statusCode = ExceptionMapperType.getStatusCode(ex);
         List<String> errors = ex
                 .getBindingResult()
                 .getAllErrors()
@@ -33,7 +36,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Throwable.class})
     public ResponseEntity<Object> customHandleException(Throwable ex, WebRequest request) {
-        // TODO complete this method
         ResponseEntity<Object> response;
         try {
             if (ex instanceof BusinessException) {
@@ -41,11 +43,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             } else if (ex instanceof Exception) {
                 response = handleException(((Exception) ex), request);
             } else {
-                ExceptionMapperType statusCode = getStatusCode(ex);
+                ExceptionMapperType statusCode = ExceptionMapperType.getStatusCode(ex);
                 response = generateResponse(new BusinessException(ex.getMessage(), ex, null, statusCode.getStatus()), request);
             }
         } catch (Exception exception) {
-            ExceptionMapperType statusCode = getStatusCode(exception);
+            ExceptionMapperType statusCode = ExceptionMapperType.getStatusCode(exception);
             response = generateResponse(new BusinessException(statusCode.getMessage(), exception, null, statusCode.getStatus()), request);
         }
         return response;
@@ -55,7 +57,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpServletRequest req = ((ServletWebRequest) request).getRequest();
         HttpStatus httpStatus = convertStatusCode(exception.getHttpStatusCode());
         return new ResponseEntity<>(
-                new CustomErrorResponse(exception.getMessage(), exception.getCode(), LocalDateTime.now(), req.getRequestURI(), req.getRequestId()),
+                new CustomErrorResponse(
+                        exception.getCode(),
+                        req.getRequestURI(),
+                        exception.getMessage(),
+                        exception.getCause() != null ? exception.getCause().getMessage() : null,
+                        req.getRequestId(),
+                        LocalDateTime.now()),
                 httpStatus);
     }
 
@@ -67,24 +75,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             result = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return result;
-    }
-
-    private ExceptionMapperType getStatusCode(Throwable ex) {
-        ExceptionMapperType[] types = ExceptionMapperType.values();
-        for (ExceptionMapperType type : types) {
-            Class<?>[] classes = type.getClasses();
-            if (classes != null) {
-                for (Class<?> clazz : classes) {
-                    if (clazz.isInstance(ex)) {
-                        try {
-                            return type;
-                        } catch (Exception e) {
-                            return ExceptionMapperType.Unknown;
-                        }
-                    }
-                }
-            }
-        }
-        return ExceptionMapperType.Unknown;
     }
 }

@@ -1,9 +1,9 @@
 package com.app.library.common.utility;
 
 public class RequestCorrelation {
-    public static final String CORRELATION_ID = "correlationId";
+
     public static final String CORRELATION_ID_HEADER_NAME = "X-Correlation-Id";
-    private ThreadLocal<String> id = new ThreadLocal<>();
+    private final ThreadLocal<String> id = new ThreadLocal<>();
     private static final ThreadLocal<RequestCorrelation> context = new ThreadLocal<>();
 
     public static RequestCorrelation getRequestCorrelation() {

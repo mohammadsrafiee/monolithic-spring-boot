@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/library
+      SPRING_DATASOURCE_USERNAME: mysql
+      SPRING_DATASOURCE_PASSWORD: mysql123!@#
+      DATASOURCE_GENERATE_DDL: "true"
+      DATASOURCE_DDL_AUTO: update
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: library
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql123!@#
+      MYSQL_ROOT_PASSWORD: root123!@#
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "3306:3306"
+volumes:
+  mysql_data:

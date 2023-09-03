@@ -10,7 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import javax.script.ScriptException;
 
 public enum ExceptionMapperType {
-    // TODO add all exception in Enum for better exception handling
+
+    // add all exception in Enum for better exception handling
     _400(400,
             "The request is malformed or contains invalid data.",
             new Class[]{
@@ -106,5 +107,24 @@ public enum ExceptionMapperType {
 
     public String getMessage() {
         return message;
+    }
+
+    public static ExceptionMapperType getStatusCode(Throwable ex) {
+        ExceptionMapperType[] types = ExceptionMapperType.values();
+        for (ExceptionMapperType type : types) {
+            Class<?>[] classes = type.getClasses();
+            if (classes != null) {
+                for (Class<?> clazz : classes) {
+                    if (clazz.isInstance(ex)) {
+                        try {
+                            return type;
+                        } catch (Exception e) {
+                            return ExceptionMapperType.Unknown;
+                        }
+                    }
+                }
+            }
+        }
+        return ExceptionMapperType.Unknown;
     }
 }

@@ -4,6 +4,7 @@ import com.app.library.common.log.impl.ILogger;
 import com.app.library.common.log.impl.LogModel;
 import com.app.library.common.utility.RequestCorrelation;
 import com.app.library.common.utility.RequestUtil;
+import com.app.library.config.AppPropertiesConfig;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
@@ -24,34 +25,19 @@ public class LogHandlerAspect {
     private static final String THREAD = "thread-";
     private static final String AUDIT_TYPE = "audit";
     private static final String EXCEPTION_TYPE = "exception";
+    private final AppPropertiesConfig config;
 
-    public LogHandlerAspect(@Autowired(required = false) @Nullable ILogger logger) {
+    public LogHandlerAspect(@Autowired(required = false) @Nullable ILogger logger,
+                            AppPropertiesConfig config) {
         this.logger = logger;
+        this.config = config;
     }
 
     @Before("@annotation(com.app.library.common.log.impl.Log)")
     public void before(JoinPoint joinPoint) {
         try {
             if (logger != null) {
-                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-                HttpServletRequest request = RequestUtil.getCurrentRequest();
-                RequestCorrelation correlation = RequestCorrelation.getRequestCorrelation();
-                LogModel log = new LogModel(
-                        LocalDateTime.now(),
-                        null, // TODO get from security context
-                        THREAD + correlation.getId(),
-                        RequestUtil.getClientIpAddress(request),
-                        AUDIT_TYPE,
-                        joinPoint.getKind(),
-                        signature.getName(),
-                        signature.getDeclaringTypeName(),
-                        null,
-                        joinPoint.getArgs(), // TODO read from property file and manage for sensitive data
-                        null,
-                        null
-                );
-                log.setPretty(true); // TODO read from property file
-                logger.writeLog(log);
+                logger.writeLog(generateLog(joinPoint, null, AUDIT_TYPE));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -62,29 +48,33 @@ public class LogHandlerAspect {
     public void exceptionHandling(JoinPoint joinPoint, Throwable ex) {
         try {
             if (logger != null) {
-                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-                HttpServletRequest request = RequestUtil.getCurrentRequest();
-                RequestCorrelation correlation = RequestCorrelation.getRequestCorrelation();
-                LogModel log = new LogModel(
-                        LocalDateTime.now(),
-                        null, // TODO get from security context
-                        THREAD + correlation.getId(),
-                        RequestUtil.getClientIpAddress(request),
-                        EXCEPTION_TYPE,
-                        joinPoint.getKind(),
-                        signature.getName(),
-                        signature.getDeclaringTypeName(),
-                        ex.getMessage(),
-                        joinPoint.getArgs(), // TODO read from property file and manage for sensitive data
-                        null,
-                        getTopOfStackTrace(ex)
-                );
-                log.setPretty(true); // TODO read from property file
-                logger.writeLog(log);
+                logger.writeLog(generateLog(joinPoint, ex, EXCEPTION_TYPE));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    private LogModel generateLog(JoinPoint joinPoint, Throwable ex, String type) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        HttpServletRequest request = RequestUtil.getCurrentRequest();
+        RequestCorrelation correlation = RequestCorrelation.getRequestCorrelation();
+        LogModel log = new LogModel(
+                LocalDateTime.now(),
+                null, // TODO get from security context
+                THREAD + correlation.getId(),
+                RequestUtil.getClientIpAddress(request),
+                type,
+                joinPoint.getKind(),
+                signature.getName(),
+                signature.getDeclaringTypeName(),
+                ex != null ? ex.getMessage() : null,
+                joinPoint.getArgs(), // TODO read from property file and manage for sensitive data
+                null,
+                getTopOfStackTrace(ex)
+        );
+        log.setPretty(config.isLogPrettyPrint());
+        return log;
     }
 
     private Throwable getCause(Throwable throwable) {
@@ -96,14 +86,20 @@ public class LogHandlerAspect {
     }
 
     private StackTraceElement getTopOfStackTrace(Throwable ex) {
-        Throwable finalCause = getCause(ex);
-        if (finalCause != null) {
-            if ((finalCause.getStackTrace() != null) &&
-                    (finalCause.getStackTrace().length >= 1)) {
-                StackTraceElement[] stackTrace = finalCause.getStackTrace();
-                if (stackTrace != null && stackTrace.length > 0)
-                    return stackTrace[0];
+        try {
+            if (ex != null) {
+                Throwable finalCause = getCause(ex);
+                if (finalCause != null) {
+                    if ((finalCause.getStackTrace() != null) &&
+                            (finalCause.getStackTrace().length >= 1)) {
+                        StackTraceElement[] stackTrace = finalCause.getStackTrace();
+                        if (stackTrace != null && stackTrace.length > 0)
+                            return stackTrace[0];
+                    }
+                }
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }

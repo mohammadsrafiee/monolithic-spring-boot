@@ -1,5 +1,7 @@
 package com.app.library.business.person.impl;
 
+import com.app.library.business.book.IBookRepository;
+import com.app.library.business.book.impl.BookEntity;
 import com.app.library.business.person.IPersonMapper;
 import com.app.library.business.person.IPersonRepository;
 import com.app.library.business.person.IPersonService;
@@ -9,17 +11,23 @@ import com.app.library.common.search.SearchModel;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PersonService implements IPersonService {
 
     private final IPersonRepository repository;
+    private final IBookRepository bookRepository;
     private final IPersonMapper mapper;
 
-    public PersonService(IPersonRepository repository, IPersonMapper mapper) {
+    public PersonService(IBookRepository bookRepository,
+                         IPersonRepository repository,
+                         IPersonMapper mapper) {
+        this.bookRepository = bookRepository;
         this.repository = repository;
         this.mapper = mapper;
     }
@@ -44,7 +52,16 @@ public class PersonService implements IPersonService {
 
     @Log
     @Override
+    @Transactional
     public void delete(Long id) {
+        PersonEntity person = repository.getReferenceById(id);
+        Set<BookEntity> books = person.getBooks();
+        if (books != null) {
+            for (BookEntity book : books) {
+                book.setCount(book.getCount() + 1);
+                bookRepository.save(book);
+            }
+        }
         repository.deleteById(id);
     }
 
