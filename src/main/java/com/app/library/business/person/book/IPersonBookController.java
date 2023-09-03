@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 public interface IPersonBookController extends IController {
-    String PERSON_BOOK_PATH = "/person-book";
-    String BORROW_PATH = "/{book-id}";
-    String RELEASE_PATH = "/{book-id}";
+    String BASE = "/";
+    String PERSON_BOOK_PATH = BASE + "person-book";
+    String BORROW_PATH = BASE + "{book-id}";
+    String RELEASE_PATH = BASE + "{book-id}";
     String MY_BOOKS_PATH = "/";
 
     @PostMapping(BORROW_PATH)

@@ -13,11 +13,13 @@ import java.util.List;
 
 @Validated
 public interface IBookController extends IController {
-    String BOOK_PATH = "/book";
+
+    String BASE = "/";
+    String BOOK_PATH = BASE + "book";
     String SAVE_OR_UPDATE_PATH = "/";
-    String DELETE_PATH = "/{id}";
-    String GET_BY_ID_PATH = "/{id}";
-    String SEARCH_PATH = "/search";
+    String DELETE_PATH = BASE + "{id}";
+    String GET_BY_ID_PATH = BASE + "{id}";
+    String SEARCH_PATH = BASE + "search";
 
     @PostMapping(path = SAVE_OR_UPDATE_PATH)
     ResponseEntity<BookModel> saveOrUpdate(@Valid @RequestBody BookModel book);

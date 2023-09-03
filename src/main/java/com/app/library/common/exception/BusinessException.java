@@ -1,11 +1,13 @@
 package com.app.library.common.exception;
 
 public class BusinessException extends RuntimeException {
-    private String code;
-    private Integer httpStatusCode;
+    private final String code;
+    private final Integer httpStatusCode;
 
     public BusinessException() {
         super();
+        code = null;
+        httpStatusCode = null;
     }
 
     public BusinessException(String message) {
@@ -38,15 +40,7 @@ public class BusinessException extends RuntimeException {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public Integer getHttpStatusCode() {
         return httpStatusCode;
-    }
-
-    public void setHttpStatusCode(Integer httpStatusCode) {
-        this.httpStatusCode = httpStatusCode;
     }
 }

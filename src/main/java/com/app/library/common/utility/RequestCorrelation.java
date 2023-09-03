@@ -20,7 +20,10 @@ public class RequestCorrelation {
     }
 
     public void setId(String correlationId) {
-        id.set(correlationId);
+        if (correlationId == null)
+            id.remove();
+        else
+            id.set(correlationId);
     }
 
 }

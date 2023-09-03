@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 public interface IPersonController extends IController {
-    String PERSON_PATH = "/person";
+    String BASE = "/";
+    String PERSON_PATH = BASE + "person";
     String SAVE_OR_UPDATE_PATH = "/";
-    String DELETE_PATH = "/{id}";
-    String GET_BY_ID_PATH = "/{id}";
-    String SEARCH_PATH = "/search";
+    String DELETE_PATH = BASE + "{id}";
+    String GET_BY_ID_PATH = BASE + "{id}";
+    String SEARCH_PATH = BASE + "search";
 
     @PostMapping(path = SAVE_OR_UPDATE_PATH)
     ResponseEntity<PersonModel> saveOrUpdate(@RequestBody PersonModel book);
